@@ -1,6 +1,6 @@
 <div class="form-group">
     @error('title')
-        <div class="alert alert-danger">
+        <div style="color: red;">
             {{ $message }}
         </div>
     @enderror
@@ -8,7 +8,7 @@
 </div>
 <div class="form-group">
     @error('content')
-        <div class="alert alert-danger">
+        <div style="color: red;">
             {{ $message }}
         </div>
     @enderror
