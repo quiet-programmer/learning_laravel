@@ -13,6 +13,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // this is used to fetch all the data from the database
     public function index()
     {
         return view('post.index', ['posts' => BlogPost::all()]);
@@ -23,6 +24,7 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // routing the  user to the create form page
     public function create()
     {
         return view('post.create');
@@ -34,6 +36,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // this is use to store or save data in the database
     public function store(StorePost $request)
     {
         $validated = $request->validated();
@@ -54,6 +57,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // this can be used to fetch a particular data from the database
     public function show($id)
     {
         return view('post.show', ['post' => BlogPost::findOrFail($id)]);
@@ -65,6 +69,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // routing users to edit form page
     public function edit($id)
     {
         return view('post.edit', ['post' => BlogPost::findOrFail($id)]);
@@ -77,6 +82,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // for updating data in database
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
@@ -94,6 +100,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // for deleting data from database
     public function destroy($id)
     {
         $post = BlogPost::findOrFail($id);

@@ -100,6 +100,7 @@ class PostTest extends TestCase
         $this->assertDatabaseMissing('blog_posts', $post->toArray());
     }
 
+    // has a type of BlogPost
     private function createDemoPost(): BlogPost
     {
         $post = new BlogPost();
