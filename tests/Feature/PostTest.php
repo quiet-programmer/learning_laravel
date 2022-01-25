@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\BlogPost;
+use App\Models\Comment;
+use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,7 +20,7 @@ class PostTest extends TestCase
         $response->assertSeeText('No Post found.');
     }
 
-    public function testToSeeOneBlogPost()
+    public function testToSeeOneBlogPostWithNoComments()
     {
         // Arrange 
         $post = $this->createDemoPost();
@@ -28,10 +30,27 @@ class PostTest extends TestCase
 
         // Assert
         $response->assertSeeText('Just testing now');
+        $response->assertSeeText('No comments yet!');
 
         $this->assertDatabaseHas('blog_posts', [
             'title' => 'Just testing now',
         ]);
+    }
+
+    public function testToSeeOneBlogPostWithComments()
+    {
+        // Arrange 
+        $post = $this->createDemoPost();
+
+        // creating model factory for comment
+        Comment::factory()->count(4)->create([
+            'blog_post_id' => $post->id
+        ]);
+
+        // Act
+        $response = $this->get('/posts');
+
+        $response->assertSeeText('4 comments');
     }
 
     public function testStoreValueIsValid()
@@ -103,11 +122,13 @@ class PostTest extends TestCase
     // has a type of BlogPost
     private function createDemoPost(): BlogPost
     {
-        $post = new BlogPost();
-        $post->title = 'Just testing now';
-        $post->content = 'Just another test for updating...';
-        $post->save();
+        // $post = new BlogPost();
+        // $post->title = 'Just testing now';
+        // $post->content = 'Just another test for updating...';
+        // $post->save();
 
-        return $post;
+        return BlogPost::factory()->defaultTitle()->create();
+
+        // return $post;
     }
 }
