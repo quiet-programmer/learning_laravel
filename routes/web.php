@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,36 +17,40 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-$posts = [
-    1 => [
-        'title' => 'Intro to Laravel',
-        'content' => 'This is a short intro to Laravel',
-        'is_new' => true
-    ],
-    2 => [
-        'title' => 'Intro to PHP',
-        'content' => 'This is a short intro to PHP',
-        'is_new' => false
-    ],
-    3 => [
-        'title' => 'Intro to GoLang',
-        'content' => 'This is a short intro to GoLang',
-        'is_new' => false
-    ],
-    4 => [
-        'title' => 'Intro to Java',
-        'content' => 'This is a short intro to Java',
-        'is_new' => true
-    ]
-];
+// $posts = [
+//     1 => [
+//         'title' => 'Intro to Laravel',
+//         'content' => 'This is a short intro to Laravel',
+//         'is_new' => true
+//     ],
+//     2 => [
+//         'title' => 'Intro to PHP',
+//         'content' => 'This is a short intro to PHP',
+//         'is_new' => false
+//     ],
+//     3 => [
+//         'title' => 'Intro to GoLang',
+//         'content' => 'This is a short intro to GoLang',
+//         'is_new' => false
+//     ],
+//     4 => [
+//         'title' => 'Intro to Java',
+//         'content' => 'This is a short intro to Java',
+//         'is_new' => true
+//     ]
+// ];
 
 Route::get('/', [HomeController::class, 'home'])->name('home.index');
+// ->middleware('auth');
+// Route::get('/home', [HomeController::class, 'home'])->name('home.index');
 Route::get('/contacts', [HomeController::class, 'contact'])->name('home.contact');
 
 Route::get('/single', AboutController::class);
 
 Route::resource('posts', PostController::class);
 // ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
+
+Auth::routes();
 
 // Route::get('/posts', function() use($posts) {
 //     dd(request()->all());
@@ -63,33 +68,33 @@ Route::resource('posts', PostController::class);
 //     return 'this is post from ' . $daysAgo . ' days ago';
 // })->name('recent_post');
 
-Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
+// Route::prefix('/fun')->name('fun.')->group(function() use($posts) {
 
-    Route::get('/response', function() use($posts) {
-        return response($posts, 201)->header('Content-Type', 'application/json')->cookie('MY_COOKIE', 'eat cookie', 3600);
-    })->name('response');
+//     Route::get('/response', function() use($posts) {
+//         return response($posts, 201)->header('Content-Type', 'application/json')->cookie('MY_COOKIE', 'eat cookie', 3600);
+//     })->name('response');
     
-    Route::get('/redirect', function() {
-        return redirect('/contacts');
-    })->name('redirect');
+//     Route::get('/redirect', function() {
+//         return redirect('/contacts');
+//     })->name('redirect');
     
-    Route::get('/back', function() {
-        return back();
-    })->name('back');
+//     Route::get('/back', function() {
+//         return back();
+//     })->name('back');
     
-    Route::get('/named-route', function() {
-        return redirect()->route('posts.show', ['id' => 1]);
-    })->name('named-route');
+//     Route::get('/named-route', function() {
+//         return redirect()->route('posts.show', ['id' => 1]);
+//     })->name('named-route');
     
-    Route::get('/away', function() {
-        return redirect()->away('https://google.com');
-    })->name('away');
+//     Route::get('/away', function() {
+//         return redirect()->away('https://google.com');
+//     })->name('away');
     
-    Route::get('/json', function() use($posts) {
-        return response()->json($posts);
-    })->name('json');
+//     Route::get('/json', function() use($posts) {
+//         return response()->json($posts);
+//     })->name('json');
     
-    Route::get('/download', function() {
-        return response()->download(public_path('/shot.png'), 'screenshot0001.png');
-    })->name('download');
-});
+//     Route::get('/download', function() {
+//         return response()->download(public_path('/shot.png'), 'screenshot0001.png');
+//     })->name('download');
+// });

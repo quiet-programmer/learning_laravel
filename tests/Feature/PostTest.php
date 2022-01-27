@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\BlogPost;
 use App\Models\Comment;
-use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -55,12 +54,13 @@ class PostTest extends TestCase
 
     public function testStoreValueIsValid()
     {
+
         $param = [
             'title' => 'This is a Title',
             'content' => 'This is a valid content from me',
         ];
 
-        $this->post('/posts', $param)
+        $this->actingAs($this->user())->post('/posts', $param)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -74,7 +74,7 @@ class PostTest extends TestCase
             'content' => 'no',
         ];
 
-        $this->post('/posts', $param)
+        $this->actingAs($this->user())->post('/posts', $param)
             ->assertStatus(302)
             ->assertSessionHas('errors');
 
@@ -95,7 +95,7 @@ class PostTest extends TestCase
             'content' => 'A new content for test'
         ];
 
-        $this->put("/posts/{$post->id}", $params)
+        $this->actingAs($this->user())->put("/posts/{$post->id}", $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -111,7 +111,8 @@ class PostTest extends TestCase
         $post = $this->createDemoPost();
         $this->assertDatabaseHas('blog_posts', array($post->id => '1'));
 
-        $this->delete("/posts/{$post->id}")
+        $this->actingAs($this->user())
+            ->delete("/posts/{$post->id}")
             ->assertStatus(302)
             ->assertSessionHas('status');
 
