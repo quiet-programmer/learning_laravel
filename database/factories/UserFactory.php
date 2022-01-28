@@ -26,8 +26,17 @@ class UserFactory extends Factory
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'phone_number' => $this->faker->phoneNumber,
+            'password' => bcrypt("bubbleplay") ,// password
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function defaultUserDetails()
+    {
+        return $this->state([
+            'name' => 'Bobby Joseph',
+            'email' => 'godsendjoseph@gmail.com',
+        ]);
     }
 }
