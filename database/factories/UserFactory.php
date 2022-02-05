@@ -29,6 +29,7 @@ class UserFactory extends Factory
             'phone_number' => $this->faker->phoneNumber,
             'password' => bcrypt("bubbleplay") ,// password
             'remember_token' => Str::random(10),
+            'is_admin' => false,
         ];
     }
 
@@ -37,6 +38,7 @@ class UserFactory extends Factory
         return $this->state([
             'name' => 'Bobby Joseph',
             'email' => 'godsendjoseph@gmail.com',
+            'is_admin' => true,
         ]);
     }
 }

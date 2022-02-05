@@ -86,7 +86,8 @@ class PostTest extends TestCase
     public function testUpdateValueIsValid()
     {
         // Arrange 
-        $post = $this->createDemoPost();
+        $user = $this->user();
+        $post = $this->createDemoPost($user->id);
 
         $this->assertDatabaseHas('blog_posts', array($post->id => '1'));
 
@@ -95,7 +96,7 @@ class PostTest extends TestCase
             'content' => 'A new content for test'
         ];
 
-        $this->actingAs($this->user())->put("/posts/{$post->id}", $params)
+        $this->actingAs($user)->put("/posts/{$post->id}", $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -108,27 +109,33 @@ class PostTest extends TestCase
 
     public function testForDeletedPost()
     {
-        $post = $this->createDemoPost();
+        $user = $this->user();
+        $post = $this->createDemoPost($user->id);
         $this->assertDatabaseHas('blog_posts', array($post->id => '1'));
 
-        $this->actingAs($this->user())
+        $this->actingAs($user)
             ->delete("/posts/{$post->id}")
             ->assertStatus(302)
             ->assertSessionHas('status');
 
         $this->assertEquals(session('status'), 'Blog post has been deleted');
         $this->assertDatabaseMissing('blog_posts', $post->toArray());
+        // $this->assertSoftDeleted('blog_posts', $post->toArray());
     }
 
     // has a type of BlogPost
-    private function createDemoPost(): BlogPost
+    private function createDemoPost($userId = null): BlogPost
     {
         // $post = new BlogPost();
         // $post->title = 'Just testing now';
         // $post->content = 'Just another test for updating...';
         // $post->save();
 
-        return BlogPost::factory()->defaultTitle()->create();
+        return BlogPost::factory()->defaultTitle()->create(
+            [
+                'user_id' => $userId ?? $this->user()->id,
+            ]
+        );
 
         // return $post;
     }

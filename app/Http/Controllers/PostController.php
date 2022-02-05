@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
 
+    // use this to set authentication for some routes
     public function __construct()
     {
+        // if user is not authenticated the user is prompt to login or create an account.
         $this->middleware('auth')->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
     /**
@@ -48,6 +49,7 @@ class PostController extends Controller
     // routing the  user to the create form page
     public function create()
     {
+        // $this->authorize('posts.create');
         return view('post.create');
     }
 
@@ -61,6 +63,7 @@ class PostController extends Controller
     public function store(StorePost $request)
     {
         $validated = $request->validated();
+        $validated['user_id'] = $request->user()->id;
         $post = BlogPost::create($validated);
         // $post = new BlogPost();
         // $post->title = $validated['title'];
@@ -93,7 +96,11 @@ class PostController extends Controller
     // routing users to edit form page
     public function edit($id)
     {
-        return view('post.edit', ['post' => BlogPost::findOrFail($id)]);
+        $post = BlogPost::findOrFail($id);
+
+        $this->authorize('update', $post);
+
+        return view('post.edit', ['post' => $post]);
     }
 
     /**
@@ -107,6 +114,13 @@ class PostController extends Controller
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+
+        // if(Gate::denies('update-post', $post)) {
+        //     abort(403, "You can't edit this blog post, you are not authorized to.");
+        // }
+
+        $this->authorize('update', $post);
+
         $validated = $request->validated();
         $post->fill($validated);
         $post->save();
@@ -125,6 +139,18 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = BlogPost::findOrFail($id);
+
+        // if(Gate::denies('delete-post', $post)) {
+        //     abort(403, "You can't delete this blog post, you are not authorized to.");
+        // }
+        
+
+        // $this->authorize('delete', $post);
+
+        // or
+
+        $this->authorize($post);
+
         $post->delete();
 
         session()->flash('status', 'Blog post has been deleted');
