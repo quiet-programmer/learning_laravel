@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
+use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
@@ -34,9 +35,12 @@ class PostController extends Controller
 
         // dd(DB::getQueryLog());
         return view(
-            'post.index', 
+            'post.index',
             [
-                'posts' => BlogPost::withCount('comments')->get()
+                'posts' => BlogPost::latest()->withCount('comments')->get(),
+                'mostCommented' => BlogPost::mostCommented()->take(5)->get(),
+                'mostActive' => User::withMostBlogPosts()->take(5)->get(),
+                'mostActiveLastMonth' => User::withMostBlogPostsLastMonth()->take(5)->get(),
             ]
         );
     }
@@ -84,7 +88,15 @@ class PostController extends Controller
     // this can be used to fetch a particular data from the database
     public function show($id)
     {
-        return view('post.show', ['post' => BlogPost::with('comments')->findOrFail($id)]);
+        return view('post.show', [
+            'post' => BlogPost::with('comments')->findOrFail($id)
+        ]);
+
+        // return view('post.show', [
+        //     'post' => BlogPost::with(['comments' => function ($query) {
+        //         return $query->latest();
+        //     }])->findOrFail($id)
+        // ]);
     }
 
     /**
@@ -143,7 +155,7 @@ class PostController extends Controller
         // if(Gate::denies('delete-post', $post)) {
         //     abort(403, "You can't delete this blog post, you are not authorized to.");
         // }
-        
+
 
         // $this->authorize('delete', $post);
 

@@ -17,7 +17,8 @@ class BlogPostFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(10),
-            'content' => $this->faker->paragraph(5, true)
+            'content' => $this->faker->paragraph(5, true),
+            'created_at' => $this->faker->dateTimeBetween('-3 months'),
         ];
     }
 

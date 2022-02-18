@@ -1,5 +1,12 @@
 <h3>
-    <a href="{{ route('posts.show', ['post' => $post->id]) }}">{{ $post->title }}</a>
+    @if($post->trashed())
+    <del>
+        @endif
+        <a class="{{ $post->trashed() ? 'text-muted' : '' }}" href="{{ route('posts.show', ['post' => $post->id]) }}">{{
+            $post->title }}</a>
+        @if($post->trashed())
+    </del>
+    @endif
 </h3>
 
 <p class="text-muted">
@@ -19,9 +26,9 @@
     @endcan
 
     {{-- @cannot('delete', $post)
-        <p>You cannot delete this post. Admin only</p>
+    <p>You cannot delete this post. Admin only</p>
     @endcannot --}}
-
+    @if(!$post->trashed())
     @can('delete', $post)
     <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id]) }}" method="POST">
         @csrf
@@ -29,4 +36,5 @@
         <input class="btn btn-dark" type="submit" value="Delete">
     </form>
     @endcan
+    @endif
 </div>
