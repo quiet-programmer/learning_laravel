@@ -44,7 +44,10 @@ class BlogPost extends Model
     // deleting models with foreign key or reference events
     public static function boot()
     {
+        // Global scope for deleted content only admin can see
         static::addGlobalScope(new DeletedAdminScope);
+
+        // this will boot your model
         parent::boot();
 
         // add the scope here and pass the class to be used..

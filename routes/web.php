@@ -40,6 +40,8 @@ use Illuminate\Support\Facades\Route;
 //     ]
 // ];
 
+Auth::routes();
+
 Route::get('/', [HomeController::class, 'home'])->name('home.index');
 // ->middleware('auth');
 // Route::get('/home', [HomeController::class, 'home'])->name('home.index');
@@ -52,8 +54,6 @@ Route::get('/single', AboutController::class);
 
 Route::resource('posts', PostController::class);
 // ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
-
-Auth::routes();
 
 // Route::get('/posts', function() use($posts) {
 //     dd(request()->all());

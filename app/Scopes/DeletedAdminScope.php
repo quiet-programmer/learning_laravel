@@ -13,7 +13,6 @@ class DeletedAdminScope implements Scope
     {
         if(Auth::check() && Auth::user()->is_admin) {
             $builder->withTrashed();
-
         }
     }
 }

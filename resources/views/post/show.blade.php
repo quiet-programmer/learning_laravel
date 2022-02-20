@@ -13,13 +13,19 @@
     <h3>An old Blog Post using If</h3>
 </div>
 @endif --}}
-<h1>{{ $post->title }}</h1>
+<h1>
+    {{ $post->title }}
+        {{-- using component with slots --}}
+        @badge(['type' => 'primary', 'show' => now()->diffInMinutes($post->created_at) < 50])
+            New Post!!
+        @endbadge
+</h1>
 <p>{{ $post->content }}</p>
-<p>Added {{ $post->created_at->diffForHumans() }}</p>
-
-@if(now()->diffInMinutes($post->created_at) < 5) <div class="alert alert-info">New!</div>
-    @endif
-
+@updated(['date' => $post->created_at, 'name' => $post->user->name])
+@endupdated
+@updated(['date' => $post->updated_at])
+Updated
+@endupdated
     <h4>Comments</h4>
     <hr>
     @forelse($post->comments as $comment)
@@ -27,7 +33,8 @@
         {{ $comment->content }}
     </p>
     <p class="text-muted">
-        added {{ $comment->created_at->diffForHumans() }}
+        @updated(['date' => $comment->created_at])
+        @endupdated
     </p>
     <hr>
     @empty
