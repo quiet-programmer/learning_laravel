@@ -23,12 +23,19 @@ class BlogPost extends Model
 
     public function comments()
     {
+        // this is for one to many
         return $this->hasMany(Comment::class)->latest();
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tags()
+    {
+        // this is for many to many relationship
+        return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 
     public function scopeLatest(Builder $query)
