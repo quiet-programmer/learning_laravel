@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostTagController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,8 @@ Route::get('/secret', [HomeController::class, 'secret'])
 Route::get('/single', AboutController::class);
 
 Route::resource('posts', PostController::class);
+
+Route::get('/posts/tag/{tag}', [PostTagController::class, 'index'])->name('post.tags.index');
 // ->only(['index', 'show', 'create', 'store', 'edit', 'update']);
 
 // Route::get('/posts', function() use($posts) {
