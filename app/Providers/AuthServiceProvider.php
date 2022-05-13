@@ -48,7 +48,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // overriding permissions
         Gate::before(function($user, $ability) {
-            if($user->is_admin && in_array($ability, ['update', 'delete'])) {
+            if($user->is_admin && in_array($ability, ['create', 'update', 'delete'])) {
                 return true;
             }
         });

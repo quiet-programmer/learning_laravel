@@ -29,7 +29,7 @@ class PostController extends Controller
         return view(
             'post.index',
             [
-                'posts' => BlogPost::latest()->withCount('comments')->with('tags')->with('user')->get(),
+                'posts' => BlogPost::latestWithRelations()->get(),
             ]
         );
     }
@@ -42,7 +42,7 @@ class PostController extends Controller
     // routing the  user to the create form page
     public function create()
     {
-        $this->authorize('posts.create');
+        // $this->authorize('posts.create');
         return view('post.create');
     }
 
@@ -78,7 +78,8 @@ class PostController extends Controller
     public function show($id)
     {
         $blogPost = Cache::tags(['blog-post'])->remember("blog-post-{$id}", now()->addMinutes(60), function () use ($id) {
-            return BlogPost::with('comments')->with('tags')->with('user')->findOrFail($id);
+            return BlogPost::with('comments', 'tags', 'user', 'comments.user')
+                ->findOrFail($id);
         });
 
         $sessionId = session()->getId();

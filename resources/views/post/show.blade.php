@@ -33,13 +33,14 @@
                 <p>Currently read by {{ $counter }} people.</p>
 
                 <h4>Comments</h4>
+                @include('comments.partials._forms')
                 <hr>
                 @forelse($post->comments as $comment)
                 <p>
                     {{ $comment->content }}
                 </p>
                 <p class="text-muted">
-                    @updated(['date' => $comment->created_at])
+                    @updated(['date' => $comment->created_at, 'name' => $comment->user->name])
                     @endupdated
                 </p>
                 <hr>
