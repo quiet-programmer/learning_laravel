@@ -16,6 +16,10 @@
 <div class="row">
     <div class="col-8">
         <h1>
+            @if($post->image)
+            <img style="height: auto; width: 50%" src="{{ $post->image->url() }}" alt="Blog Post Image"> <br>
+            {{-- styling background-attachment: fixed --}}
+            @endif
             {{ $post->title }}
             {{-- using component with slots --}}
             @badge(['type' => 'primary', 'show' => now()->diffInMinutes($post->created_at) < 50]) New Post!! @endbadge

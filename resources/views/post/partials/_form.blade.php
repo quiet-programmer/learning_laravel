@@ -14,3 +14,12 @@
     @enderror
     <textarea class="form-control" name="content" cols="30" placeholder="Content" rows="10">{{ old('content', optional($post ?? null)->content) }}</textarea>
 </div>
+
+<div class="form-group">
+    @error('content')
+        <div style="color: red;">
+            {{ $message }}
+        </div>
+    @enderror
+    <input class="form-control" type="file" name="thumbnail" placeholder="Title">
+</div>

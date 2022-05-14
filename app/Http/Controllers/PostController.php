@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
+use App\Models\Image;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -57,15 +59,30 @@ class PostController extends Controller
     {
         $validated = $request->validated();
         $validated['user_id'] = $request->user()->id;
-        $post = BlogPost::create($validated);
+        $blogPost = BlogPost::create($validated);
         // $post = new BlogPost();
         // $post->title = $validated['title'];
         // $post->content = $validated['content'];
         // $post->save();
 
+        // how to save files
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails');
+            $blogPost->image()->save(
+                Image::create(['path' => $path])
+            );
+            // dump($file);
+            // dump($file->getClientMimeType());
+            // dump($file->getClientOriginalExtension());
+
+            // dump($file->store('thumbnails'));
+            // $name1 = $file->storeAs('thumbnails', $blogPost->id . '.' . $file->guessClientExtension());
+            // dump(Storage::url($name1));
+        }
+
         $request->session()->flash('status', 'Blog Post has been created');
 
-        return redirect()->route('posts.show', ['post' => $post->id]);
+        return redirect()->route('posts.show', ['post' => $blogPost->id]);
     }
 
     /**
@@ -162,6 +179,28 @@ class PostController extends Controller
 
         $validated = $request->validated();
         $post->fill($validated);
+
+        // how to save files
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails');
+            if ($post->image) {
+                Storage::delete($post->image->path);
+                $post->image->path = $path;
+                $post->image->save();
+            } else {
+                $post->image()->save(
+                    Image::create(['path' => $path])
+                );
+            }
+            // dump($file);
+            // dump($file->getClientMimeType());
+            // dump($file->getClientOriginalExtension());
+
+            // dump($file->store('thumbnails'));
+            // $name1 = $file->storeAs('thumbnails', $blogPost->id . '.' . $file->guessClientExtension());
+            // dump(Storage::url($name1));
+        }
+
         $post->save();
 
         $request->session()->flash('status', 'Post updated successfully!');
