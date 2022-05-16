@@ -44,7 +44,7 @@ class PostController extends Controller
     // routing the  user to the create form page
     public function create()
     {
-        // $this->authorize('posts.create');
+        $this->authorize('create');
         return view('post.create');
     }
 
